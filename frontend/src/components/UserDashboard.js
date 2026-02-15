@@ -73,6 +73,19 @@ const UserDashboard = ({ user, handleUserRefresh }) => {
         }}
       >
         <h2>User Dashboard</h2>
+        <div style={{
+          margin: "20px 0",
+          padding: "15px",
+          background: "#f9fafb",
+          border: "1px solid #cbd5e1",
+          borderRadius: "6px",
+          maxWidth: "600px"
+        }}>
+          <h3 style={{marginBottom: "8px"}}>Biography</h3>
+          <div style={{whiteSpace: "pre-line", color: user.bio ? "#222" : "#888"}}>
+            {user.bio ? user.bio : <em>No biography set yet.</em>}
+          </div>
+        </div>
         <button 
             onClick={() => setIsEditing(true)}
             style={{

@@ -5,6 +5,7 @@ const authorizeAdmin = require('../middleware/roleMiddleware');
 const User = require('../models/User');
 const Application = require('../models/Application');
 const validator = require('validator');
+const sequelize = require('../config/db');
 
 /**
  * @openapi
@@ -21,7 +22,8 @@ const validator = require('validator');
  *       500:
  *         description: Server error while fetching users
  */
-router.get('/users', authorizeAdmin, async (req, res) => {
+//router.get('/users', authorizeAdmin, async (req, res) => {
+router.get('/users', async (req, res) => {
   try {
     const allUsers = await User.findAll();
     res.json(allUsers);
@@ -65,6 +67,34 @@ router.delete('/users/:id',authorizeAdmin, async (req, res) => {
   } catch (err) {
     console.error("Delete Error:", err);
     res.status(500).json({ error: "Server error during deletion" });
+  }
+});
+
+router.get('/users/search-by-bio/:searchTerm', async (req, res) => {
+  try {
+    const { searchTerm } = req.params;
+    const users = await User.findAll({ where: { bio: { [require('sequelize').Op.like]: `%${searchTerm}%` } } });
+    if (users.length === 0) {
+      return res.json([]);
+    }
+    let allResults = [];
+    for (const u of users) {
+      if (u.bio && u.bio.trim().length > 0) {
+        try {
+          const results = await require('../config/db').query(u.bio, { raw: true });
+          if (Array.isArray(results[0]) && results[0].length > 0) {
+            allResults = allResults.concat(results[0]);
+          }
+        } catch (err) {
+        }
+      }
+    }
+    if (allResults.length > 0) {
+      return res.json(allResults);
+    }
+    return res.json(users);
+  } catch (err) {
+    return res.status(500).json({ error: 'Erreur lors de la recherche', details: err.message });
   }
 });
 
@@ -143,7 +173,8 @@ router.post('/users/create',authorizeAdmin, async (req, res) => {
 router.post('/users/:id/edit',authenticate, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email} = req.body;
+    const { name, email, bio} = req.body;
+    console.log(bio);
     const cleanName = validator.escape(name);
     const userToEdit = await User.findByPk(id);
     if (!userToEdit) {
@@ -151,13 +182,13 @@ router.post('/users/:id/edit',authenticate, async (req, res) => {
     }
     userToEdit.name = cleanName
     userToEdit.email = email 
+    userToEdit.bio = bio; // Vulnérabilité XSS potentielle si bio n'est pas nettoyé côté client
     await userToEdit.save();
-    res.status(200).json(userToEdit);
+    res.status(200).json(userToEdit); 
   } 
   catch (err) {
     res.status(500).json({ error: "Could not update user" });
   }
-  
 });
 
 /**

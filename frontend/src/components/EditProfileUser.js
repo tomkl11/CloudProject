@@ -2,7 +2,8 @@ import React, { useState } from "react";
 const EditProfileUser = ({ user, onUpdateSuccess }) => {
     const [editProfile, setEditProfile] = useState({
         name: user.name, 
-        email: user.email
+        email: user.email,
+        bio: user.bio
     });
 
     const handleChange = (e) => {
@@ -14,7 +15,6 @@ const EditProfileUser = ({ user, onUpdateSuccess }) => {
     };
     const handleEditProfile = (e) => {
         e.preventDefault();
-        // Utilise les valeurs du state plutôt que e.target.elements
         fetch(`http://localhost:3000/api/users/${user.id}/edit`, {
             method: "POST",
             headers: { "Content-Type": "application/json",
@@ -51,7 +51,16 @@ const EditProfileUser = ({ user, onUpdateSuccess }) => {
             placeholder="Email" 
             required 
             />
+            <input 
+            type="text" 
+            name="bio" 
+            value={editProfile.bio}
+            onChange={handleChange} 
+            placeholder="Biography" 
+            required 
+            />
             <button type="submit">Save Changes</button>
+            
         </form>
     </div> ); 
 }
