@@ -62,6 +62,6 @@ For routes requiring an ID (e.g., `DELETE /api/users/{id}`):
 ## Demo Credentials
 | Role | Email | Password | Description |
 | :--- | :--- | :--- | :--- |
-| **Super Admin** | `admin@securesup.fr` | `admin_password` | Full access to users, schools, and applications. |
-| **Student / User** | `student@securesup.fr` | `student_password` | Can view schools and manage their own applications. |
+| **Admin** | `admin@securesup.fr` | `admin_password` | Full access to users, schools, and applications. |
+| **User** | `student@securesup.fr` | `student_password` | Can view schools and manage their own applications. |
 
