@@ -87,7 +87,7 @@ router.delete('/schools/:id',authorizeAdmin, async (req, res) => {
  *               maxPlace:
  *                 type: integer
  *     responses:
- *       200:
+ *       201:
  *         description: School created successfully
  *       500:
  *         description: Could not create school

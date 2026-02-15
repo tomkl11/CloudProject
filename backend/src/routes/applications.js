@@ -52,7 +52,7 @@ router.get('/application/users/:userId/:registered?', authenticate, async (req, 
 
 /**
  * @openapi
- * /api/application/generate/users/{userId}/{schoolId}:
+ * /api/application/generate/{userId}/{schoolId}:
  *   post:
  *     summary: Generate an application for a user to a specific school
  *     tags:
@@ -69,7 +69,7 @@ router.get('/application/users/:userId/:registered?', authenticate, async (req, 
  *         required: true
  *         description: ID of the school to which the application is to be generated
  *     responses:
- *       200:
+ *       201:
  *         description: Successful application creation
  *       500:
  *         description: Could not create application due to server error
