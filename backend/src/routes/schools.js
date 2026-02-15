@@ -3,6 +3,21 @@ const router = express.Router();
 const School = require('../models/School');
 const Application = require('../models/Application');
 const authorizeAdmin = require('../middleware/roleMiddleware'); 
+/**
+ * @openapi
+ * /api/schools:
+ *   get:
+ *     summary: Get all schools
+ *     tags:
+ *       - [Schools]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful response with all schools
+ *       500:
+ *         description: Server error while fetching schools
+ */
 router.get('/schools',authorizeAdmin, async (req, res) => {
   try {
     const allSchools = await School.findAll();
@@ -12,6 +27,26 @@ router.get('/schools',authorizeAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/schools/{id}:
+ *   delete:
+ *     summary: delete a school by ID
+ *     tags:
+ *       - [Schools]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the school to delete
+ *     responses:
+ *       200:
+ *         description: School deleted successfully
+ *       500:
+ *         description: Could not delete school
+ */
 router.delete('/schools/:id',authorizeAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -29,6 +64,34 @@ router.delete('/schools/:id',authorizeAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/schools/create:
+ *   post:
+ *     summary: Create a new school
+ *     tags:
+ *       - [Schools]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *               maxPlace:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: School created successfully
+ *       500:
+ *         description: Could not create school
+ */  
 router.post('/schools/create',authorizeAdmin, async (req, res) => {
   try {
     const { name, status, maxPlace } = req.body;

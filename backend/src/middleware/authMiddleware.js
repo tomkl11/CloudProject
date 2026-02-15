@@ -11,7 +11,7 @@ const authenticate = async (req, res, next) => {
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findByPk(decoded.id);
-    if (!user || (id && decoded.id !== id)) {
+    if (!user || (id && String(decoded.id) !== String(id))) {
       return res.status(403).json({ error: "Access denied : Invalid user or unauthorized access" });
     }
     req.user = user;
