@@ -5,6 +5,22 @@ const authorizeAdmin = require('../middleware/roleMiddleware');
 const User = require('../models/User');
 const Application = require('../models/Application');
 const validator = require('validator');
+
+/**
+ * @openapi
+ * /api/users:
+ *   get:
+ *     summary: Get all users
+ *     tags:
+ *       - [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful response with all users
+ *       500:
+ *         description: Server error while fetching users
+ */
 router.get('/users', authorizeAdmin, async (req, res) => {
   try {
     const allUsers = await User.findAll();
@@ -14,6 +30,26 @@ router.get('/users', authorizeAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/users/{id}:
+ *   delete:
+ *     summary: delete a user by ID
+ *     tags:
+ *       - [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to delete
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       500:
+ *         description: Could not delete user
+ */
 router.delete('/users/:id',authorizeAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -32,6 +68,36 @@ router.delete('/users/:id',authorizeAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/users/create:
+ *   post:
+ *     summary: Create a new user
+ *     tags:
+ *       - [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User created successfully
+ *       500:
+ *         description: Could not create user
+ */ 
 router.post('/users/create',authorizeAdmin, async (req, res) => {
   try { 
     const { name, email, password, role } = req.body; 
@@ -43,6 +109,37 @@ router.post('/users/create',authorizeAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/users/{id}/edit:
+ *   post:
+ *     summary: edit a user by ID
+ *     tags:
+ *       - [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to edit
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User edited successfully
+ *       500:
+ *         description: Could not edit user
+ */ 
 router.post('/users/:id/edit',authenticate, async (req, res) => {
   try {
     const { id } = req.params;
@@ -63,6 +160,26 @@ router.post('/users/:id/edit',authenticate, async (req, res) => {
   
 });
 
+/**
+ * @openapi
+ * /api/users/{id}/switchRole:
+ *   post:
+ *     summary: switch a user's role
+ *     tags:
+ *       - [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user whose role is to be switched
+ *     responses:
+ *       200:
+ *         description: User role switched successfully
+ *       500:
+ *         description: Could not switch user role
+ */ 
 router.post('/users/:id/switchRole', authorizeAdmin, async (req, res) => {
   try {
     const { id } = req.params;
