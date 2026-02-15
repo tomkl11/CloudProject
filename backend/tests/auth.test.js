@@ -1,9 +1,11 @@
 const request = require('supertest');
-const app = require('../src/app'); // On pointe vers app.js, pas index/server
+const app = require('../src/app');
 
 describe('Auth API', () => {
-  // Optionnel : augmente le timeout pour laisser le temps à la DB de répondre
   jest.setTimeout(10000);
+  const fakeName = `testuser${Date.now()}`;
+  const fakeEmail = `test${Date.now()}@test.com`;
+  const fakePassword = 'password123';
 
   it('should fail login with wrong credentials', async () => {
     const res = await request(app)
@@ -12,8 +14,29 @@ describe('Auth API', () => {
         email: 'wrong@test.com',
         password: 'wrongpassword'
       });
-    
-    // On vérifie que le serveur répond (même une erreur 401 ou 404 est un signe de vie)
     expect(res.statusCode).toBe(401); 
+  });
+
+  it('should login successfully with correct credentials', async () => {
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'admin@securesup.fr',
+        password: 'admin_password'
+      });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('token');
+  });
+
+  it('should register a new user', async () => {
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send({
+        
+        email: fakeEmail,
+        password: fakePassword,
+        name: fakeName
+      });
+    expect(res.statusCode).toBe(201);
   });
 });

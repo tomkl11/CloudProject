@@ -93,7 +93,7 @@ router.delete('/users/:id',authorizeAdmin, async (req, res) => {
  *               role:
  *                 type: string
  *     responses:
- *       200:
+ *       201:
  *         description: User created successfully
  *       500:
  *         description: Could not create user
