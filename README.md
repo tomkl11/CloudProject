@@ -30,38 +30,5 @@ Create a ```.env``` file in the root directory and add:
 - The Backend API will be available at ```http://localhost:3000```
 - The Database will be availble at ```http://localhost:3306```
 
-## How to run tests##
-``` docker-compose exec backend npm test ```
 
-## API documentation ##
-### 1. How to Access
-Once the Docker containers are running, navigate to:
-[http://localhost:3000/api-docs]
-
-### 2. How to Authenticate (Bearer Token)
-Most routes are protected. To access them, follow these steps:
-
-1. **Get a Token**: 
-   - Locate the **Authentication** section in Swagger.
-   - Open the `POST /api/auth/login` endpoint.
-   - Click **"Try it out"** and enter the credentials (e.g., `admin@securesup.fr` / `admin_password`).
-   - Click **Execute**. 
-   - Copy the `token` string from the JSON response (do not include the quotes).
-
-2. **Authorize Swagger**:
-   - Click the green **"Authorize"** button at the top right of the page.
-   - In the **Value** field, paste the token you just copied.
-   - Click **Authorize**, then **Close**.
-   - You can now test protected routes (indicated by a 🔒 icon).
-
-### 3. Testing Endpoint with Parameters
-For routes requiring an ID (e.g., `DELETE /api/users/{id}`):
-- Click **"Try it out"**.
-- Enter the target ID in the specific **id** field that appears in the "Parameters" section.
-- Click **Execute**.
-## Demo Credentials
-| Role | Email | Password | Description |
-| :--- | :--- | :--- | :--- |
-| **Admin** | `admin@securesup.fr` | `admin_password` | Full access to users, schools, and applications. |
-| **User** | `student@securesup.fr` | `student_password` | Can view schools and manage their own applications. |
 

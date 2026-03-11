@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import EditProfileUser from "./EditProfileUser";
-const AdminDashboard = ({ user, handleUserRefresh }) => {
-  const [isEditing, setIsEditing] = useState(false);
+const AdminDashboard = ({ user }) => {
   const [allUsers, setAllUsers] = useState([]);
-  const [newUser, setNewUser] = useState({name: "", 
-    email: "", 
-    password: "", 
-    role: "USER", });
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "USER",
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [schools, setSchools] = useState([]);
   const [newSchool, setNewSchool] = useState({
@@ -21,7 +21,7 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
       fetch("http://localhost:3000/api/schools", {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
         .then((res) => res.json())
@@ -29,7 +29,7 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
       fetch("http://localhost:3000/api/users", {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
         .then((res) => res.json())
@@ -37,17 +37,6 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
         .catch((err) => console.error("Error fetching users:", err));
     }
   }, [user]);
-
-  if (isEditing) {
-    return (
-      <div style={{ padding: "20px" }}> 
-        <button onClick={() => setIsEditing(false)} style={{ marginBottom: "20px" }}>
-          ← Back to Dashboard
-        </button>
-        <EditProfileUser user={user} onUpdateSuccess={handleUserRefresh} />
-      </div>
-    );
-  }
 
   // Feature: Search keyword search [cite: 58]
   const filteredUsers = allUsers.filter(
@@ -62,7 +51,7 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
         .then((res) => {
@@ -80,47 +69,28 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
   const handleCreateUser = (e) => {
     e.preventDefault();
     fetch("http://localhost:3000/api/users/create", {
-    method: "POST",
-    headers: { 
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: JSON.stringify(newUser),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      setAllUsers([...allUsers, data]);
-      setNewUser({name: "", email: "", password: "", role: "USER"});
-    })
-    .catch((err) => console.error("Error:", err));
-  };
-
-  const handleSwitchUserRole = (userId) => {
-    if (window.confirm("Are you sure you want to switch this user's role?")) {
-      const userToSwitch = allUsers.find((u) => u.id === userId);
-    if (!userToSwitch) return;
-    fetch(`http://localhost:3000/api/users/${userId}/switchRole`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+      body: JSON.stringify(newUser),
     })
       .then((res) => res.json())
-    .then((data) => {
-      setAllUsers(prevUsers => prevUsers.map((u) => (u.id === userId ? data : u)));
-      alert(`User ${data.email} is now ${data.role}`);
-    })
-    .catch((err) => console.error("Error:", err));
-    }
+      .then((data) => {
+        setAllUsers([...allUsers, data]);
+        setNewUser({ name: "", email: "", password: "", role: "USER" });
+      })
+      .catch((err) => console.error("Error:", err));
   };
+
   const handleDeleteSchool = (schoolId) => {
     if (window.confirm("Are you sure you want to delete this school?")) {
       fetch(`http://localhost:3000/api/schools/${schoolId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
         .then((res) => {
@@ -139,7 +109,7 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(newSchool),
     })
@@ -153,24 +123,6 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
   const [bioSearchTerm, setBioSearchTerm] = useState("");
   const [bioSearchResults, setBioSearchResults] = useState([]);
 
-  const handleBioSearch = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/users/search-by-bio/${encodeURIComponent(bioSearchTerm)}`,
-        {
-          headers: {
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = await response.json();
-      setBioSearchResults(Array.isArray(data) ? data : []);
-    } catch (err) {
-      alert("Erreur lors de la recherche vulnérable.");
-      setBioSearchResults([]);
-    }
-  };
 
   return (
     <div style={{ marginTop: "20px" }}>
@@ -183,19 +135,6 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
         }}
       >
         <h2>Admin Dashboard</h2>
-        <button 
-            onClick={() => setIsEditing(true)}
-            style={{
-              padding: "8px 15px",
-              backgroundColor: "#003366",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-              borderRadius: "4px",
-            }}
-          >
-            Edit My Profile
-          </button>
         <h3>User Management</h3>
         <div style={{ marginBottom: "20px" }}>
           <input
@@ -230,9 +169,7 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
               <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                 Role
               </th>
-              <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                Bio
-              </th>
+              <th style={{ padding: "10px", border: "1px solid #ddd" }}>Bio</th>
               <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                 Actions
               </th>
@@ -250,27 +187,18 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>
                   {u.role}
                 </td>
-                <td style={{ padding: "10px", border: "1px solid #ddd", maxWidth: "250px", whiteSpace: "pre-line", color: u.bio ? "#222" : "#888" }}>
+                <td
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ddd",
+                    maxWidth: "250px",
+                    whiteSpace: "pre-line",
+                    color: u.bio ? "#222" : "#888",
+                  }}
+                >
                   {u.bio ? u.bio : <em>No bio</em>}
                 </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                  {u.id === user.id ? (
-                    <span style={{ color: "#999" }}>Current User </span>
-                  ) : (
-                    <button
-                      onClick={() => handleSwitchUserRole(u.id)}
-                      style={{
-                        backgroundColor: "#007bff",
-                        color: "white",
-                        border: "none",
-                        padding: "5px 10px",
-                        cursor: "pointer",
-                        borderRadius: "4px",
-                        marginRight: "10px",
-                      }}
-                    >
-                      Switch Role
-                    </button>)}
                   {u.role !== "ADMIN" ? (
                     <button
                       onClick={() => handleDeleteUser(u.id)}
@@ -312,7 +240,9 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
             type="password"
             placeholder="Password"
             value={newUser.password}
-            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+            onChange={(e) =>
+              setNewUser({ ...newUser, password: e.target.value })
+            }
             required
           />
           <select
@@ -355,7 +285,9 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
             />
             <select
               value={newSchool.status}
-              onChange={(e) => setNewSchool({ ...newSchool, status: e.target.value })}
+              onChange={(e) =>
+                setNewSchool({ ...newSchool, status: e.target.value })
+              }
             >
               <option value="Public">Public</option>
               <option value="Private">Private</option>
@@ -367,142 +299,60 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
           {schools.length === 0 ? (
             <p>No schools published.</p>
           ) : (
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              background: "white",
-            }}
-          >
-            <thead>
-              <tr style={{ background: "#eee" }}>
-                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                  Name
-                </th>
-                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                  Status
-                </th>
-                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                  Max Places
-                </th>
-                <th style={{ padding: "10px", border: "1px solid #ddd" }}>
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {schools.map((s) => (
-                <tr key={s.id}>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                    {s.name}
-                  </td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                    {s.status}
-                  </td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                    {s.maxPlace}
-                  </td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                    <button
-                      onClick={() => handleDeleteSchool(s.id)}
-                      style={{
-                        backgroundColor: "#ff4d4d",
-                        color: "white",
-                        border: "none",
-                        padding: "5px 10px",
-                        cursor: "pointer",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>)}
-        </div>
-        <div style={{ marginTop: "30px", marginBottom: "30px" }}>
-          <h3>Recherche vulnérable par biographie</h3>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              try {
-                const response = await fetch(
-                  `http://localhost:3000/api/users/search-by-bio/${encodeURIComponent(bioSearchTerm)}`,
-                  {
-                    headers: {
-                      "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                    },
-                  }
-                );
-                const data = await response.json();
-                setBioSearchResults(Array.isArray(data) ? data : []);
-              } catch (err) {
-                alert("Erreur lors de la recherche vulnérable.");
-                setBioSearchResults([]);
-              }
-            }}
-            style={{ display: "flex", alignItems: "center", gap: "10px" }}
-          >
-            <input
-              type="text"
-              placeholder="Mot-clé biographie (vulnérable)"
-              value={bioSearchTerm || ""}
-              onChange={e => setBioSearchTerm(e.target.value)}
+            <table
               style={{
-                padding: "12px",
-                width: "350px",
-                borderRadius: "6px",
-                border: "2px solid #ff4d4d",
-                fontSize: "16px",
-                background: "#fff0f0"
-              }}
-            />
-            <button
-              type="submit"
-              style={{
-                padding: "12px 24px",
-                backgroundColor: "#ff4d4d",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                fontWeight: "bold",
-                fontSize: "16px",
-                cursor: "pointer"
+                width: "100%",
+                borderCollapse: "collapse",
+                background: "white",
               }}
             >
-              Recherche vulnérable
-            </button>
-          </form>
-          {bioSearchResults && bioSearchResults.length > 0 && (
-            <div style={{ marginTop: "20px" }}>
-              <h4>Résultats vulnérables ({bioSearchResults.length} users)</h4>
-              <table style={{ width: "100%", borderCollapse: "collapse", background: "white", border: "2px solid #ff4d4d" }}>
-                <thead>
-                  <tr style={{ background: "#ffe5e5" }}>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>ID</th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>Name</th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>Email</th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>Password</th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>Role</th>
-                    <th style={{ padding: "10px", border: "1px solid #ddd" }}>Bio</th>
+              <thead>
+                <tr style={{ background: "#eee" }}>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    Name
+                  </th>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    Status
+                  </th>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    Max Places
+                  </th>
+                  <th style={{ padding: "10px", border: "1px solid #ddd" }}>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {schools.map((s) => (
+                  <tr key={s.id}>
+                    <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      {s.name}
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      {s.status}
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      {s.maxPlace}
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                      <button
+                        onClick={() => handleDeleteSchool(s.id)}
+                        style={{
+                          backgroundColor: "#ff4d4d",
+                          color: "white",
+                          border: "none",
+                          padding: "5px 10px",
+                          cursor: "pointer",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {bioSearchResults.map((u) => (
-                    <tr key={u.id}>
-                      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{u.id}</td>
-                      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{u.name}</td>
-                      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{u.email}</td>
-                      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{u.password}</td>
-                      <td style={{ padding: "10px", border: "1px solid #ddd" }}>{u.role}</td>
-                      <td style={{ padding: "10px", border: "1px solid #ddd", maxWidth: "250px", whiteSpace: "pre-line", color: u.bio ? "#222" : "#888" }}>{u.bio ? u.bio : <em>No bio</em>}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
       </div>
@@ -511,4 +361,3 @@ const AdminDashboard = ({ user, handleUserRefresh }) => {
 };
 
 export default AdminDashboard;
-

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import EditProfileUser from "./EditProfileUser";
-const UserDashboard = ({ user, handleUserRefresh }) => {
-  const [isEditing, setIsEditing] = useState(false);
+const UserDashboard = ({ user }) => {
   const [schools, setSchools] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [schoolsSubscribed, setSchoolsSubscribed] = useState([]);
@@ -27,17 +25,6 @@ const UserDashboard = ({ user, handleUserRefresh }) => {
     setSchoolsSubscribed(schoolsArray);})
     }
   }, [user]);
-
-  if (isEditing) {
-    return (
-      <div style={{ padding: "20px" }}>
-        <button onClick={() => setIsEditing(false)} style={{ marginBottom: "20px" }}>
-          ← Back to Dashboard
-        </button>
-        <EditProfileUser user={user} onUpdateSuccess = {handleUserRefresh}/>
-      </div>
-    );
-  }
   const filteredSchools = schools.filter(
     (school) =>
       school.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,11 +40,11 @@ const UserDashboard = ({ user, handleUserRefresh }) => {
       },
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(() => {
         alert("Application created successfully!");
         window.location.reload();
       })
-      .catch((err) => {
+      .catch(() => {
         alert("Error creating application");
       });
   };
@@ -81,24 +68,7 @@ const UserDashboard = ({ user, handleUserRefresh }) => {
           borderRadius: "6px",
           maxWidth: "600px"
         }}>
-          <h3 style={{marginBottom: "8px"}}>Biography</h3>
-          <div style={{whiteSpace: "pre-line", color: user.bio ? "#222" : "#888"}}>
-            {user.bio ? user.bio : <em>No biography set yet.</em>}
-          </div>
         </div>
-        <button 
-            onClick={() => setIsEditing(true)}
-            style={{
-              padding: "8px 15px",
-              backgroundColor: "#4a5568",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer"
-            }}
-          >
-            Edit My Profile
-          </button>
         <h3>School Management</h3>
         <div style={{ marginBottom: "20px" }}>
           <input

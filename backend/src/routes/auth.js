@@ -3,32 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { QueryTypes } = require('sequelize');
-/**
- * @openapi
- * /api/auth/register:
- *   post:
- *     summary: User Registration
- *     tags:
- *       - Authentication
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful registration
- *       401:
- *         description: Email already exists or server error
- */
+
 router.post('/register', async (req, res) => {
   const { email, password, name, role } = req.body;
 
@@ -55,30 +30,7 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ error: "Email already exists or server error" });
   }
 });
-/**
- * @openapi
- * /api/auth/login:
- *   post:
- *     summary: User Login
- *     tags:
- *       - Authentication
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful login
- *       401:
- *         description: Invalid credentials
- */
+
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 

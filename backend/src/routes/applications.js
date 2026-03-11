@@ -3,33 +3,8 @@ const router = express.Router();
 const School = require('../models/School');
 const Application = require('../models/Application');
 const User = require('../models/User');
-const authenticate = require('../middleware/authMiddleware');
 
-/**
- * @openapi
- * /api/application/users/{userId}/{registered}:
- *   get:
- *     summary: Get all schools for a user based on registration status
- *     tags:
- *       - [Applications]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         description: ID of the user whose applications are to be retrieved
- *       - in: path
- *         name: registered
- *         required: false
- *         description: Whether the user is registered (true/false)
- *     responses:
- *       200:
- *         description: Successful response with all schools for the user
- *       500:
- *         description: Server error while fetching schools for the user
- */
-router.get('/application/users/:userId/:registered?', authenticate, async (req, res) => {
+router.get('/application/users/:userId/:registered?', async (req, res) => {
     try {
         const {userId, registered} = req.params;
         let schools = [];
@@ -50,31 +25,8 @@ router.get('/application/users/:userId/:registered?', authenticate, async (req, 
     }
 });
 
-/**
- * @openapi
- * /api/application/generate/{userId}/{schoolId}:
- *   post:
- *     summary: Generate an application for a user to a specific school
- *     tags:
- *       - [Applications]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         description: ID of the user for whom the application is to be generated
- *       - in: path
- *         name: schoolId
- *         required: true
- *         description: ID of the school to which the application is to be generated
- *     responses:
- *       201:
- *         description: Successful application creation
- *       500:
- *         description: Could not create application due to server error
- */
-router.post('/application/generate/:userId/:schoolId',authenticate, async (req, res) => {
+
+router.post('/application/generate/:userId/:schoolId', async (req, res) => {
   try {
     const { userId, schoolId } = req.params;
     const user = await User.findByPk(userId);
