@@ -4,7 +4,6 @@
 This project is a Full-Stack Web Application designed to manage school admissions and student registrations.
 - Theme: Education & Administrative Management.
 - Key Features: User authentication, school directory management, and an administrative dashboard for role management and student tracking.
-- Security Focus: Built as a security-oriented project to demonstrate vulnerabilities (SQL Injection, Business Logic Flaws) and their respective remediations.
 
 ## Prerequisites
 Before running the application, ensure you have the following installed:

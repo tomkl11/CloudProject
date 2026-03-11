@@ -1,16 +1,11 @@
-FROM node:18
-
+FROM node:18-alpine AS build
 WORKDIR /app
-
-# Copie des fichiers de dépendances
 COPY package*.json ./
 RUN npm install
-
-# Copie du code source
 COPY . .
+RUN npm run build
 
-# Port par défaut de React
-EXPOSE 4000
-
-# Commande pour lancer React
-CMD ["npm", "start"]
+FROM nginx:stable-alpine
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
