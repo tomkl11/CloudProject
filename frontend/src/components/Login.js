@@ -16,10 +16,6 @@ const Login = ({ onLoginSuccess, onGoToRegister }) => {
 
       const data = await response.json(); 
       if (response.ok) {
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          console.log("Token sauvegardé !");
-        }
         onLoginSuccess(data.user); 
       } else {
         setError(data.error || 'Identifiants invalides');
