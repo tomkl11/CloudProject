@@ -18,7 +18,7 @@ const AdminDashboard = ({ user }) => {
   useEffect(() => {
     // Feature: User management - Admin can view users [cite: 50]
     if (user) {
-      fetch("http://localhost:3000/api/schools", {
+      fetch("http://localhost/api/schools", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -26,7 +26,7 @@ const AdminDashboard = ({ user }) => {
       })
         .then((res) => res.json())
         .then((data) => setSchools(data));
-      fetch("http://localhost:3000/api/users", {
+      fetch("http://localhost/api/users", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -47,7 +47,7 @@ const AdminDashboard = ({ user }) => {
 
   const handleDeleteUser = (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      fetch(`http://localhost:3000/api/users/${userId}`, {
+      fetch(`http://localhost/api/users/${userId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const AdminDashboard = ({ user }) => {
 
   const handleCreateUser = (e) => {
     e.preventDefault();
-    fetch("http://localhost:3000/api/users/create", {
+    fetch("http://localhost/api/users/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,11 +86,10 @@ const AdminDashboard = ({ user }) => {
 
   const handleDeleteSchool = (schoolId) => {
     if (window.confirm("Are you sure you want to delete this school?")) {
-      fetch(`http://localhost:3000/api/schools/${schoolId}`, {
+      fetch(`http://localhost/api/schools/${schoolId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
         .then((res) => {
@@ -105,11 +104,10 @@ const AdminDashboard = ({ user }) => {
   };
   const handleCreateSchool = (e) => {
     e.preventDefault();
-    fetch("http://localhost:3000/api/schools/create", {
+    fetch("http://localhost/api/schools/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(newSchool),
     })
@@ -119,9 +117,6 @@ const AdminDashboard = ({ user }) => {
         setNewSchool({ name: "", status: "Public", maxPlace: 0 });
       });
   };
-
-  const [bioSearchTerm, setBioSearchTerm] = useState("");
-  const [bioSearchResults, setBioSearchResults] = useState([]);
 
 
   return (
@@ -169,7 +164,6 @@ const AdminDashboard = ({ user }) => {
               <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                 Role
               </th>
-              <th style={{ padding: "10px", border: "1px solid #ddd" }}>Bio</th>
               <th style={{ padding: "10px", border: "1px solid #ddd" }}>
                 Actions
               </th>
@@ -186,17 +180,6 @@ const AdminDashboard = ({ user }) => {
                 </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>
                   {u.role}
-                </td>
-                <td
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #ddd",
-                    maxWidth: "250px",
-                    whiteSpace: "pre-line",
-                    color: u.bio ? "#222" : "#888",
-                  }}
-                >
-                  {u.bio ? u.bio : <em>No bio</em>}
                 </td>
                 <td style={{ padding: "10px", border: "1px solid #ddd" }}>
                   {u.role !== "ADMIN" ? (

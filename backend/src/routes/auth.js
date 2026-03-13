@@ -33,7 +33,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
-
+  console.log("test");
   try {
     const query = `SELECT * FROM Users WHERE email = ? AND password = ?`;
     const results = await User.sequelize.query(query, {
@@ -44,15 +44,8 @@ router.post('/login', async (req, res) => {
     if (results && results.length > 0) {
       const user = results[0];
       console.log(`[AUTH] Login success for: ${user.email}`);
-      const token = jwt.sign(
-        { id: user.id, role: user.role, email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "24h" }
-      );
-
       res.json({
         message: "Login successful",
-        token : token,
         user: { 
           id: user.id, 
           email: user.email, 
